@@ -1,14 +1,23 @@
 import sys
 import socket
-from lib import Lib
 
-PORT = 9000
-BUFSIZE = 1000
+SERVERPORT = 9000
 
 def main(argv):
-    clientSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    serverName = sys.argv[1]
+    serverArg = sys.argv[2]
 
-    clientSocket.sendto("l", (10.0.0.1, 9000))
+    clientSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    clientSocket.settimeout(1)
+    clientSocket.sendto(serverArg.encode(), (serverName, SERVERPORT))
+    
+    try:
+        data, adrr = clientSocket.recvfrom(1024)
+        print(data.decode())
+    except socket.timeout:
+        print('Request timed out')
+    
+    clientSocket.close()
 
 if __name__ == "__main__":
    main(sys.argv[1:])
